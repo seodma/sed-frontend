@@ -11,9 +11,16 @@ import {
 } from '@patternfly/react-core';
 import propTypes from 'prop-types';
 import AdditionalRepositoriesTable from '../AdditionalRepositoriesTable';
+import useAvailableRepositories from '../../hooks/useAvailableRepositories';
+import Loading from '../LoadingState/Loading';
 
 const AdditionalRepositoriesCard = (props) => {
   const { activationKey } = props;
+  const {
+    isLoading: isLoading,
+    error: error,
+    data: availableRepositories,
+  } = useAvailableRepositories(activationKey.name);
   return (
     <Card>
       <CardHeader>
@@ -29,9 +36,11 @@ const AdditionalRepositoriesCard = (props) => {
             explicitly added to the activation key.
           </Text>
         </TextContent>
-        <AdditionalRepositoriesTable
-          repositories={activationKey.additionalRepositories}
-        />
+        {isLoading && !error ? (
+          <Loading />
+        ) : (
+          <AdditionalRepositoriesTable repositories={availableRepositories} />
+        )}
       </CardBody>
     </Card>
   );
